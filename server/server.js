@@ -14,7 +14,7 @@ const app = express();
 
 // Enable Cross-Origin Resource Sharing (CORS) for frontend client
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: true, // Allow any frontend origin (Vercel, local dev, or third-party iframe embeds)
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 }));
