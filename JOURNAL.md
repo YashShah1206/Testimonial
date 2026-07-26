@@ -27,6 +27,14 @@
   - **Options:** Full page reload after each approval/rejection, periodic polling.
   - **Why:** Immediate state updates provide an instantaneous, responsive feel for business owners moderating feedback. By updating the local component state directly upon successful PATCH API responses, action buttons disappear and badges toggle instantly without network lag or page flicker.
 
+- **Decision 5:** Use iframe embedding strategy for the third-party widget (`/widget`) with dynamic URL search param theming (`?accent=`).
+  - **Options:** Custom JavaScript `<script>` SDK tag with Web Components, iframe embed.
+  - **Why:** An iframe ensures 100% CSS and DOM isolation from the third-party client website, guaranteeing that third-party site stylesheets do not override or break widget styling. Passing `?accent=` as a URL parameter allows effortless CSS variable theming without requiring complex script initialization.
+
+- **Decision 6:** Generate deterministic colored circle avatars with user initials when no photo is uploaded.
+  - **Options:** Generic gray placeholder silhouette, colored initials avatar.
+  - **Why:** A generic gray silhouette looks unfinished and unappealing. Calculating 1-2 character initials and hashing the user's name to select a curated vibrant gradient background gives the public wall (`/wall`) a polished, premium aesthetic even if no users upload photos.
+
 ## 3. Working with AI agents
 
 - **Tools and models used:** Gemini 3.1 Pro (High) via Antigravity Agentic IDE.
@@ -35,19 +43,22 @@
 - **Your 3–5 most important prompts:**
   - *Task 1 specification prompt*: Clearly defining scope, required files, tech stack, and explicit instructions not to overstep into dashboard/widget development.
   - *Task 2 moderation dashboard prompt*: Structuring the REST PATCH endpoints and modular card UI with badge status tokens and optimistic button toggles.
+  - *Task 3 public wall and widget prompt*: Isolating approved-only backend fetching and building the standalone `demo.html` proof of concept.
 - **At least one time AI was wrong:** *During initial Task 2 browser testing, clicking Approve/Reject caused a CORS Network Error because the Express CORS middleware in `server.js` omitted the `'PATCH'` HTTP method. While backend Node tests passed (since server-to-server calls don't enforce browser CORS rules), frontend preflight requests failed until `'PATCH'` was added to allowed CORS methods.*
-- **Something you rejected:** *We rejected adding pagination or authentication to `/dashboard` per explicit task scope instructions.*
+- **Something you rejected:** *We rejected adding pagination, AI moderation features, or duplicate detection in Task 3 per explicit task boundaries.*
 
 ## 4. Verification
 
 - **How did you convince yourself the code actually works?**
   - Automated migration check: Executed `npx prisma migrate dev` to verify schema validity and table creation.
-  - API Verification: Executed HTTP requests to `POST /api/testimonials`, `GET /api/testimonials`, and `PATCH /api/testimonials/:id/approve` / `reject` to test Express controllers and SQLite persistence.
-  - End-to-End Browser UI Check: Started Vite dev server and verified both `/` (submission form) and `/dashboard` (moderation workflow with live status toggling).
+  - API Verification: Executed HTTP requests to `POST /api/testimonials`, `GET /api/testimonials`, `GET /api/testimonials/approved`, and `PATCH /api/testimonials/:id/approve` / `reject` to test Express controllers and SQLite persistence.
+  - End-to-End Browser UI Check: Verified `/` (submission form), `/dashboard` (moderation workflow), `/wall` (public approved wall), and `/widget?accent=%23ef4444` (colored widget).
+  - Standalone Third-Party Proof: Opened `demo.html` to confirm iframe embedding and live JavaScript theme switching across simulated client webpages.
 - **What do you know is still broken or fragile?**
   - Currently, uploaded images are stored locally; in a serverless cloud deployment (like Vercel/Render), local uploads would be ephemeral without persistent disk volumes.
 
 ## 5. If I had 5 more hours
 
-- Build the P0 Public Wall with responsive masonry layout and empty states.
-- Develop the P1 Embeddable JavaScript Widget `<script>` tag snippet with customizable theme attributes.
+- Implement AI auto-moderation to flag spam or inappropriate language automatically upon submission.
+- Build pagination and filtering by star rating on the moderation dashboard and public wall.
+- Add duplicate detection based on email address and IP rate limiting.

@@ -58,6 +58,26 @@ export const getTestimonials = async () => {
 };
 
 /**
+ * Fetch ONLY approved testimonials (ordered newest first) from the backend API.
+ * 
+ * @returns {Promise<Array>} List of approved testimonials
+ */
+export const getApprovedTestimonials = async () => {
+  try {
+    const response = await apiClient.get('/testimonials/approved');
+    return response.data.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw {
+      success: false,
+      message: error.message || 'Network error: Unable to fetch approved testimonials.'
+    };
+  }
+};
+
+/**
  * Approve a pending testimonial by ID.
  * 
  * @param {string} id - Testimonial ID

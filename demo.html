@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acme Cloud Solutions — Third-Party Widget Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --accent: #6366f1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Simulated Third-Party Navigation */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 5%;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .btn-cta {
+      padding: 0.6rem 1.25rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 5rem 1rem 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Interactive Theme Controls */
+    .theme-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      padding: 1.25rem 2rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      max-width: 650px;
+      margin: 0 auto 3rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-controls span {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .color-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .color-btn.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Embed Section */
+    .embed-section {
+      max-width: 1100px;
+      margin: 0 auto 5rem;
+      padding: 0 1.5rem;
+    }
+
+    .embed-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .embed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .embed-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .code-badge {
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: #0f172a;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      color: #38bdf8;
+      border: 1px solid #334155;
+    }
+
+    /* The actual iframe embed */
+    .testimonial-iframe {
+      width: 100%;
+      min-height: 520px;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Simulated Corporate Navbar -->
+  <nav class="navbar">
+    <div class="logo">⚡ ACME CLOUD SOLUTIONS</div>
+    <ul class="nav-links">
+      <li>Products</li>
+      <li>Enterprise</li>
+      <li>Case Studies</li>
+      <li>Pricing</li>
+    </ul>
+    <button class="btn-cta">Start Free Trial</button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Loved by Engineering Teams Worldwide</h1>
+    <p>We empower fast-moving companies to deploy infrastructure in seconds. But don't take our word for it—read verified feedback from our users below.</p>
+
+    <!-- Interactive Widget Theme Swapper -->
+    <div class="theme-controls">
+      <span>🎨 Test Widget Accent Customization:</span>
+      <button class="color-btn active" style="background: #6366f1;" onclick="setTheme('default', this)">Default (Indigo)</button>
+      <button class="color-btn" style="background: #ef4444;" onclick="setTheme('%23ef4444', this)">Red Theme (#ef4444)</button>
+      <button class="color-btn" style="background: #10b981;" onclick="setTheme('%2310b981', this)">Emerald Theme (#10b981)</button>
+      <button class="color-btn" style="background: #f59e0b;" onclick="setTheme('%23f59e0b', this)">Amber Theme (#f59e0b)</button>
+    </div>
+  </section>
+
+  <!-- Embed Section proving iframe functionality -->
+  <section class="embed-section">
+    <div class="embed-card">
+      <div class="embed-header">
+        <div class="embed-title">Live Testimonial Widget (Embedded via &lt;iframe&gt;)</div>
+        <div class="code-badge" id="current-url">&lt;iframe src="http://localhost:5173/widget" ...&gt;</div>
+      </div>
+
+      <!-- THE TASK 3 EMBEDDABLE WIDGET IFRAME -->
+      <iframe 
+        id="widget-frame"
+        src="http://localhost:5173/widget" 
+        class="testimonial-iframe" 
+        title="Customer Testimonial Widget">
+      </iframe>
+    </div>
+  </section>
+
+  <script>
+    function setTheme(accentParam, btnElem) {
+      // Update active button state
+      document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+      btnElem.classList.add('active');
+
+      // Build new iframe source URL
+      const baseUrl = 'http://localhost:5173/widget';
+      const newUrl = accentParam === 'default' ? baseUrl : `${baseUrl}?accent=${accentParam}`;
+
+      // Update iframe src and UI code badge
+      const iframe = document.getElementById('widget-frame');
+      iframe.src = newUrl;
+
+      const badge = document.getElementById('current-url');
+      const displayUrl = accentParam === 'default' ? baseUrl : `${baseUrl}?accent=${decodeURIComponent(accentParam)}`;
+      badge.textContent = `<iframe src="${displayUrl}" ...>`;
+    }
+  </script>
+</body>
+</html>

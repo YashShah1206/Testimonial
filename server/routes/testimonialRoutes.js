@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { submitTestimonial, getAllTestimonials, approveTestimonial, rejectTestimonial } = require('../controllers/testimonialController');
+const { submitTestimonial, getAllTestimonials, getApprovedTestimonials, approveTestimonial, rejectTestimonial } = require('../controllers/testimonialController');
 const upload = require('../middleware/uploadMiddleware');
 
 // @route   POST /api/testimonials
 // @desc    Submit a new customer testimonial
 // @access  Public
 router.post('/', upload.single('photo'), submitTestimonial);
+
+// @route   GET /api/testimonials/approved
+// @desc    Get ONLY approved testimonials (ordered newest first)
+// @access  Public (Wall & Widget)
+router.get('/approved', getApprovedTestimonials);
 
 // @route   GET /api/testimonials
 // @desc    Get all testimonials (ordered newest first)

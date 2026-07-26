@@ -172,9 +172,37 @@ const rejectTestimonial = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get ONLY approved testimonials ordered by newest first
+ * @route   GET /api/testimonials/approved
+ * @access  Public (Wall & Widget)
+ */
+const getApprovedTestimonials = async (req, res, next) => {
+  try {
+    const approvedTestimonials = await prisma.testimonial.findMany({
+      where: {
+        status: 'Approved'
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: approvedTestimonials.length,
+      data: approvedTestimonials
+    });
+  } catch (error) {
+    console.error('[Testimonial Controller - Get Approved Error]:', error);
+    next(error);
+  }
+};
+
 module.exports = {
   submitTestimonial,
   getAllTestimonials,
+  getApprovedTestimonials,
   approveTestimonial,
   rejectTestimonial
 };
