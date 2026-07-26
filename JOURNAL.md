@@ -35,7 +35,7 @@
 - **Your 3–5 most important prompts:**
   - *Task 1 specification prompt*: Clearly defining scope, required files, tech stack, and explicit instructions not to overstep into dashboard/widget development.
   - *Task 2 moderation dashboard prompt*: Structuring the REST PATCH endpoints and modular card UI with badge status tokens and optimistic button toggles.
-- **At least one time AI was wrong:** *During initial git push verification, command string escaping in inline PowerShell required refactoring into dedicated node test scripts for reliable cross-platform execution.*
+- **At least one time AI was wrong:** *During initial Task 2 browser testing, clicking Approve/Reject caused a CORS Network Error because the Express CORS middleware in `server.js` omitted the `'PATCH'` HTTP method. While backend Node tests passed (since server-to-server calls don't enforce browser CORS rules), frontend preflight requests failed until `'PATCH'` was added to allowed CORS methods.*
 - **Something you rejected:** *We rejected adding pagination or authentication to `/dashboard` per explicit task scope instructions.*
 
 ## 4. Verification
