@@ -1,0 +1,97 @@
+# Testimonial Platform
+
+A modern, full-stack testimonial collection and moderation platform built as an SDE-1 Take-Home Assignment. Businesses can collect customer testimonials, review them in a moderation dashboard, and embed approved testimonials on external websites.
+
+## 🚀 Tech Stack
+
+- **Frontend**: React (Vite), React Router, Axios, Custom CSS (CSS Modules & Variables with vibrant, glassmorphic design aesthetics).
+- **Backend**: Node.js, Express.js, Multer (for optional photo uploads).
+- **Database**: SQLite with Prisma ORM.
+
+---
+
+## 📁 Project Structure
+
+```
+Testimonial/
+├── client/                 # React frontend (Vite)
+│   ├── src/
+│   │   ├── components/     # Reusable UI components (TestimonialForm, StarRatingInput)
+│   │   ├── pages/          # Application pages (Home / Submission Wall)
+│   │   ├── services/       # Axios API client & endpoints
+│   │   ├── App.jsx         # Router & main application wrapper
+│   │   └── main.jsx        # React DOM entry point
+│   └── package.json
+├── server/                 # Node.js + Express backend API
+│   ├── controllers/        # Route controllers (testimonialController)
+│   ├── middleware/         # Error handling & upload middleware
+│   ├── prisma/             # Prisma schema & SQLite database
+│   ├── routes/             # API routes
+│   ├── utils/              # Validation helper functions
+│   ├── uploads/            # Static image storage for uploaded photos
+│   ├── server.js           # Express server entry point
+│   └── package.json
+├── README.md               # Project documentation
+├── JOURNAL.md              # Decision & development log
+└── GEMINI.md               # AI Agent collaboration setup & guidelines
+```
+
+---
+
+## 🛠️ Setup & Installation Instructions
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or pnpm
+
+### 1. Backend Setup (`server/`)
+Open a terminal and navigate to the `server/` directory:
+```bash
+cd server
+npm install
+```
+
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+*(Default settings: `PORT=5000`, `DATABASE_URL="file:./dev.db"`)*
+
+Run Prisma database migrations to create the SQLite database and generate the Prisma Client:
+```bash
+npx prisma migrate dev --name init
+```
+
+Start the backend API server:
+```bash
+npm run dev
+```
+The server will run on `http://localhost:5000`.
+
+---
+
+### 2. Frontend Setup (`client/`)
+Open a new terminal window and navigate to the `client/` directory:
+```bash
+cd client
+npm install
+```
+
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+*(Default settings: `VITE_API_URL="http://localhost:5000/api"`)*
+
+Start the development server:
+```bash
+npm run dev
+```
+The frontend application will be accessible at `http://localhost:5173`.
+
+---
+
+## ✅ Current Features (Task 1: Core Foundation & Customer Submission Flow)
+- **Public Submission Form**: Responsive card layout with real-time field validation, interactive star ratings, photo upload preview, loading indicators, and success banners.
+- **Backend API**: RESTful endpoint (`POST /api/testimonials`) with server-side validation and multipart/form-data support for optional photo uploads.
+- **Database Persistence**: Stores submitted testimonials in SQLite with an automatic default status of `Pending`.

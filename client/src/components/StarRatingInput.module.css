@@ -1,0 +1,50 @@
+.ratingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.starsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.starButton {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  color: rgba(255, 255, 255, 0.2);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.starButton:hover {
+  transform: scale(1.2);
+}
+
+.starButton:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.starFilled {
+  color: #fbbf24;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));
+}
+
+.starIcon {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.ratingLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-height: 1.25rem;
+}
