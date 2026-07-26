@@ -16,8 +16,8 @@ A modern, full-stack testimonial collection and moderation platform built as an 
 Testimonial/
 ├── client/                 # React frontend (Vite)
 │   ├── src/
-│   │   ├── components/     # Reusable UI components (TestimonialForm, StarRatingInput, TestimonialCard)
-│   │   ├── pages/          # Application pages (Home / Submission Form, Dashboard / Moderation)
+│   │   ├── components/     # Reusable UI components (TestimonialForm, StarRatingInput, TestimonialCard, PublicTestimonialCard)
+│   │   ├── pages/          # Application pages (Home, Dashboard, Wall, Widget)
 │   │   ├── services/       # Axios API client & endpoints
 │   │   ├── App.jsx         # Router & main application wrapper
 │   │   └── main.jsx        # React DOM entry point
@@ -31,6 +31,7 @@ Testimonial/
 │   ├── uploads/            # Static image storage for uploaded photos
 │   ├── server.js           # Express server entry point
 │   └── package.json
+├── demo.html               # Standalone third-party website iframe widget demo
 ├── README.md               # Project documentation
 ├── JOURNAL.md              # Decision & development log
 └── GEMINI.md               # AI Agent collaboration setup & guidelines
@@ -102,3 +103,9 @@ The frontend application will be accessible at `http://localhost:5173`.
 - **Review Dashboard**: Responsive public moderation page displaying all submitted testimonials ordered newest first, complete with live stats counters (Pending vs Approved vs Rejected).
 - **Status Badges & Optimistic UI**: Distinct color-coded badges (Yellow/Pending, Green/Approved, Red/Rejected). Clicking Approve or Reject updates the badge in real time without reloading the webpage.
 - **Moderation APIs**: RESTful endpoints (`GET /api/testimonials`, `PATCH /api/testimonials/:id/approve`, and `PATCH /api/testimonials/:id/reject`) with robust 404 validation and CORS support.
+
+### Task 3: Public Testimonial Wall & Embeddable Widget (`/wall` & `/widget`)
+- **Public Wall (`/wall`)**: Displays ONLY approved testimonials in a responsive masonry/grid layout. Automatically calculates and displays vibrant colored circle initials avatars (e.g., `"AS"` for Alice Smith) when no customer photo is uploaded.
+- **Approved-Only Backend API (`GET /api/testimonials/approved`)**: RESTful endpoint strictly filtering by `status === 'Approved'` ordered by newest first, guaranteeing zero leakage of Pending or Rejected reviews.
+- **Embeddable Widget (`/widget`)**: Lightweight, transparent iframe view designed for third-party embedding. Dynamically parses URL search parameters (`?accent=%23ef4444` or `?accent=#10b981`) to style star icons, badges, and card borders in real time.
+- **Standalone Proof of Concept (`demo.html`)**: Standalone corporate landing page demonstrating live iframe embedding (`<iframe src="http://localhost:5173/widget" ...>`) with interactive JavaScript buttons to test live theme switching.
