@@ -51,14 +51,56 @@ const PublicTestimonialCard = ({ testimonial, accentColor }) => {
     cardStyle['--avatar-bg'] = accentColor;
   }
 
+  const renderSentimentBadge = () => {
+    const sentiment = testimonial.sentiment || 'Unknown';
+    let bg = 'rgba(100, 116, 139, 0.2)';
+    let color = '#94a3b8';
+    let icon = '•';
+
+    if (sentiment === 'Positive') {
+      bg = 'rgba(16, 185, 129, 0.2)';
+      color = '#10b981';
+      icon = '😊';
+    } else if (sentiment === 'Negative') {
+      bg = 'rgba(239, 68, 68, 0.2)';
+      color = '#ef4444';
+      icon = '😞';
+    } else if (sentiment === 'Neutral') {
+      bg = 'rgba(148, 163, 184, 0.2)';
+      color = '#cbd5e1';
+      icon = '😐';
+    }
+
+    return (
+      <span style={{
+        backgroundColor: bg,
+        color: color,
+        padding: '0.2rem 0.55rem',
+        borderRadius: '20px',
+        fontSize: '0.72rem',
+        fontWeight: '600',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.25rem',
+        border: `1px solid ${color}40`,
+        marginLeft: 'auto'
+      }}>
+        <span>{icon}</span> {sentiment}
+      </span>
+    );
+  };
+
   return (
     <div className={styles.card} style={cardStyle}>
-      <div className={styles.rating} aria-label={`Rating: ${rating} out of 5 stars`}>
-        {Array.from({ length: 5 }, (_, idx) => (
-          <span key={idx} style={{ opacity: idx < rating ? 1 : 0.25 }}>
-            ★
-          </span>
-        ))}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <div className={styles.rating} aria-label={`Rating: ${rating} out of 5 stars`}>
+          {Array.from({ length: 5 }, (_, idx) => (
+            <span key={idx} style={{ opacity: idx < rating ? 1 : 0.25 }}>
+              ★
+            </span>
+          ))}
+        </div>
+        {renderSentimentBadge()}
       </div>
 
       <div className={styles.quoteContainer}>

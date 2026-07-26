@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getApprovedTestimonials } from '../services/api';
 import PublicTestimonialCard from '../components/PublicTestimonialCard';
+import SkeletonLoader from '../components/SkeletonLoader';
+import Pagination from '../components/Pagination';
 import styles from './Widget.module.css';
 
 const Widget = () => {
@@ -16,23 +18,39 @@ const Widget = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const fetchApproved = async (page = 1) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await getApprovedTestimonials(page, 3);
+      if (res && res.items) {
+        setTestimonials(res.items);
+        setTotalPages(res.totalPages || 1);
+        setTotalItems(res.totalItems || 0);
+        setCurrentPage(res.currentPage || page);
+      } else if (Array.isArray(res)) {
+        setTestimonials(res);
+      }
+    } catch (err) {
+      console.error('Failed to load widget testimonials:', err);
+      setError('Unable to load customer testimonials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchApproved = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await getApprovedTestimonials();
-        setTestimonials(data);
-      } catch (err) {
-        console.error('Failed to load widget testimonials:', err);
-        setError('Unable to load customer testimonials.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchApproved();
-  }, []);
+    fetchApproved(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const containerStyle = {};
   if (accentColor) {
@@ -51,9 +69,8 @@ const Widget = () => {
       </div>
 
       {isLoading ? (
-        <div className={styles.stateContainer}>
-          <div className={styles.spinner} />
-          <p className={styles.emptyText}>Loading customer proof...</p>
+        <div style={{ width: '100%', margin: '1rem 0' }}>
+          <SkeletonLoader count={3} />
         </div>
       ) : error ? (
         <div className={styles.stateContainer}>
@@ -64,15 +81,22 @@ const Widget = () => {
           <p className={styles.emptyText}>No approved testimonials to display.</p>
         </div>
       ) : (
-        <div className={styles.listContainer}>
-          {testimonials.map((item) => (
-            <PublicTestimonialCard
-              key={item.id}
-              testimonial={item}
-              accentColor={accentColor}
-            />
-          ))}
-        </div>
+        <>
+          <div className={styles.listContainer}>
+            {testimonials.map((item) => (
+              <PublicTestimonialCard
+                key={item.id}
+                testimonial={item}
+                accentColor={accentColor}
+              />
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
       )}
     </div>
   );

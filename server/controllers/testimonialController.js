@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const { validateTestimonialInput } = require('../utils/validation');
+const { analyzeSentiment } = require('../services/aiService');
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
@@ -32,6 +33,27 @@ const submitTestimonial = async (req, res, next) => {
 
     const { name, email, company, testimonial, rating } = req.body;
 
+    // Check for duplicate submission (Email AND Testimonial Text)
+    const duplicate = await prisma.testimonial.findFirst({
+      where: {
+        email: email.trim(),
+        testimonial: testimonial.trim()
+      }
+    });
+
+    if (duplicate) {
+      if (req.file && req.file.path) {
+        const fs = require('fs');
+        fs.unlink(req.file.path, (err) => {
+          if (err) console.error('Failed to clean up orphan uploaded photo:', err);
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: 'A duplicate testimonial with this email and review text already exists.'
+      });
+    }
+
     // Determine photo path: use uploaded file path or fallback to text URL if provided
     let photoUrl = null;
     if (req.file && req.file.filename) {
@@ -39,6 +61,9 @@ const submitTestimonial = async (req, res, next) => {
     } else if (req.body.photo && typeof req.body.photo === 'string' && req.body.photo.trim() !== '') {
       photoUrl = req.body.photo.trim();
     }
+
+    // Analyze sentiment via AI Service
+    const sentimentResult = await analyzeSentiment(testimonial.trim(), Number(rating));
 
     // Save testimonial to SQLite database using Prisma ORM
     const newTestimonial = await prisma.testimonial.create({
@@ -49,11 +74,12 @@ const submitTestimonial = async (req, res, next) => {
         testimonial: testimonial.trim(),
         rating: Number(rating),
         photo: photoUrl,
-        status: 'Pending' // Explicitly enforce Pending status per Task 1 specification
+        status: 'Pending', // Explicitly enforce Pending status per Task 1 specification
+        sentiment: sentimentResult
       }
     });
 
-    console.log(`[Testimonial Controller] New submission stored with ID: ${newTestimonial.id} (Status: Pending)`);
+    console.log(`[Testimonial Controller] New submission stored with ID: ${newTestimonial.id} (Status: Pending, Sentiment: ${sentimentResult})`);
 
     // Return success response with 201 Created status code
     return res.status(201).json({
@@ -69,13 +95,22 @@ const submitTestimonial = async (req, res, next) => {
 };
 
 /**
- * @desc    Get all submitted testimonials ordered by newest first
+ * @desc    Get all submitted testimonials ordered by newest first with pagination
  * @route   GET /api/testimonials
  * @access  Public (Moderation Dashboard)
  */
 const getAllTestimonials = async (req, res, next) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit, 10) || 100);
+    const skip = (page - 1) * limit;
+
+    const totalItems = await prisma.testimonial.count();
+    const totalPages = Math.ceil(totalItems / limit) || 1;
+
     const testimonials = await prisma.testimonial.findMany({
+      skip,
+      take: limit,
       orderBy: {
         createdAt: 'desc'
       }
@@ -84,6 +119,10 @@ const getAllTestimonials = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: testimonials.length,
+      items: testimonials,
+      totalItems,
+      totalPages,
+      currentPage: page,
       data: testimonials
     });
   } catch (error) {
@@ -173,16 +212,27 @@ const rejectTestimonial = async (req, res, next) => {
 };
 
 /**
- * @desc    Get ONLY approved testimonials ordered by newest first
+ * @desc    Get ONLY approved testimonials ordered by newest first with pagination
  * @route   GET /api/testimonials/approved
  * @access  Public (Wall & Widget)
  */
 const getApprovedTestimonials = async (req, res, next) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit, 10) || 100);
+    const skip = (page - 1) * limit;
+
+    const totalItems = await prisma.testimonial.count({
+      where: { status: 'Approved' }
+    });
+    const totalPages = Math.ceil(totalItems / limit) || 1;
+
     const approvedTestimonials = await prisma.testimonial.findMany({
       where: {
         status: 'Approved'
       },
+      skip,
+      take: limit,
       orderBy: {
         createdAt: 'desc'
       }
@@ -191,6 +241,10 @@ const getApprovedTestimonials = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: approvedTestimonials.length,
+      items: approvedTestimonials,
+      totalItems,
+      totalPages,
+      currentPage: page,
       data: approvedTestimonials
     });
   } catch (error) {

@@ -69,6 +69,44 @@ const TestimonialCard = ({ testimonial, onStatusChange }) => {
     }
   };
 
+  const renderSentimentBadge = () => {
+    const sentiment = testimonial.sentiment || 'Unknown';
+    let bg = 'rgba(100, 116, 139, 0.2)';
+    let color = '#94a3b8';
+    let icon = '•';
+
+    if (sentiment === 'Positive') {
+      bg = 'rgba(16, 185, 129, 0.2)';
+      color = '#10b981';
+      icon = '😊';
+    } else if (sentiment === 'Negative') {
+      bg = 'rgba(239, 68, 68, 0.2)';
+      color = '#ef4444';
+      icon = '😞';
+    } else if (sentiment === 'Neutral') {
+      bg = 'rgba(148, 163, 184, 0.2)';
+      color = '#cbd5e1';
+      icon = '😐';
+    }
+
+    return (
+      <span style={{
+        backgroundColor: bg,
+        color: color,
+        padding: '0.25rem 0.6rem',
+        borderRadius: '20px',
+        fontSize: '0.75rem',
+        fontWeight: '600',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.3rem',
+        border: `1px solid ${color}40`
+      }}>
+        <span>{icon}</span> {sentiment}
+      </span>
+    );
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
@@ -78,8 +116,9 @@ const TestimonialCard = ({ testimonial, onStatusChange }) => {
           {testimonial.company && <span className={styles.company}>{testimonial.company}</span>}
           <span className={styles.date}>{formattedDate}</span>
         </div>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           {renderBadge()}
+          {renderSentimentBadge()}
         </div>
       </div>
 

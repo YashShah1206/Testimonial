@@ -16,6 +16,7 @@ model Testimonial {
   rating      Int      // Validated in application logic to be between 1 and 5
   photo       String?  // Optional URL or file path to uploaded photo
   status      String   @default("Pending")
+  sentiment   String   @default("Unknown") // AI sentiment: Positive, Neutral, Negative, or Unknown
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

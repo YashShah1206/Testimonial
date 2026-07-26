@@ -38,14 +38,16 @@ export const submitTestimonial = async (formData) => {
 };
 
 /**
- * Fetch all testimonials (ordered newest first) from the backend API.
+ * Fetch all testimonials (ordered newest first) from the backend API with pagination.
  * 
- * @returns {Promise<Array>} List of testimonials
+ * @param {number} page - Page number
+ * @param {number} limit - Items per page
+ * @returns {Promise<Object>} Pagination payload ({ items, totalItems, totalPages, currentPage })
  */
-export const getTestimonials = async () => {
+export const getTestimonials = async (page = 1, limit = 6) => {
   try {
-    const response = await apiClient.get('/testimonials');
-    return response.data.data;
+    const response = await apiClient.get(`/testimonials?page=${page}&limit=${limit}`);
+    return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
       throw error.response.data;
@@ -58,14 +60,16 @@ export const getTestimonials = async () => {
 };
 
 /**
- * Fetch ONLY approved testimonials (ordered newest first) from the backend API.
+ * Fetch ONLY approved testimonials (ordered newest first) from the backend API with pagination.
  * 
- * @returns {Promise<Array>} List of approved testimonials
+ * @param {number} page - Page number
+ * @param {number} limit - Items per page
+ * @returns {Promise<Object>} Pagination payload ({ items, totalItems, totalPages, currentPage })
  */
-export const getApprovedTestimonials = async () => {
+export const getApprovedTestimonials = async (page = 1, limit = 6) => {
   try {
-    const response = await apiClient.get('/testimonials/approved');
-    return response.data.data;
+    const response = await apiClient.get(`/testimonials/approved?page=${page}&limit=${limit}`);
+    return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
       throw error.response.data;
