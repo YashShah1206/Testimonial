@@ -37,4 +37,66 @@ export const submitTestimonial = async (formData) => {
   }
 };
 
+/**
+ * Fetch all testimonials (ordered newest first) from the backend API.
+ * 
+ * @returns {Promise<Array>} List of testimonials
+ */
+export const getTestimonials = async () => {
+  try {
+    const response = await apiClient.get('/testimonials');
+    return response.data.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw {
+      success: false,
+      message: error.message || 'Network error: Unable to fetch testimonials.'
+    };
+  }
+};
+
+/**
+ * Approve a pending testimonial by ID.
+ * 
+ * @param {string} id - Testimonial ID
+ * @returns {Promise<Object>} Updated testimonial
+ */
+export const approveTestimonial = async (id) => {
+  try {
+    const response = await apiClient.patch(`/testimonials/${id}/approve`);
+    return response.data.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw {
+      success: false,
+      message: error.message || 'Network error: Unable to approve testimonial.'
+    };
+  }
+};
+
+/**
+ * Reject a pending testimonial by ID.
+ * 
+ * @param {string} id - Testimonial ID
+ * @returns {Promise<Object>} Updated testimonial
+ */
+export const rejectTestimonial = async (id) => {
+  try {
+    const response = await apiClient.patch(`/testimonials/${id}/reject`);
+    return response.data.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw {
+      success: false,
+      message: error.message || 'Network error: Unable to reject testimonial.'
+    };
+  }
+};
+
 export default apiClient;

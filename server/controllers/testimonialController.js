@@ -68,6 +68,113 @@ const submitTestimonial = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get all submitted testimonials ordered by newest first
+ * @route   GET /api/testimonials
+ * @access  Public (Moderation Dashboard)
+ */
+const getAllTestimonials = async (req, res, next) => {
+  try {
+    const testimonials = await prisma.testimonial.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: testimonials.length,
+      data: testimonials
+    });
+  } catch (error) {
+    console.error('[Testimonial Controller - Get All Error]:', error);
+    next(error);
+  }
+};
+
+/**
+ * @desc    Approve a pending testimonial
+ * @route   PATCH /api/testimonials/:id/approve
+ * @access  Public (Moderation Dashboard)
+ */
+const approveTestimonial = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Check if testimonial exists
+    const existing = await prisma.testimonial.findUnique({
+      where: { id }
+    });
+
+    if (!existing) {
+      return res.status(404).json({
+        success: false,
+        message: `Testimonial with ID ${id} not found.`
+      });
+    }
+
+    // Update status to Approved
+    const updatedTestimonial = await prisma.testimonial.update({
+      where: { id },
+      data: { status: 'Approved' }
+    });
+
+    console.log(`[Testimonial Controller] Testimonial ${id} status updated to: Approved`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Testimonial approved successfully.',
+      data: updatedTestimonial
+    });
+  } catch (error) {
+    console.error('[Testimonial Controller - Approve Error]:', error);
+    next(error);
+  }
+};
+
+/**
+ * @desc    Reject a pending testimonial
+ * @route   PATCH /api/testimonials/:id/reject
+ * @access  Public (Moderation Dashboard)
+ */
+const rejectTestimonial = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Check if testimonial exists
+    const existing = await prisma.testimonial.findUnique({
+      where: { id }
+    });
+
+    if (!existing) {
+      return res.status(404).json({
+        success: false,
+        message: `Testimonial with ID ${id} not found.`
+      });
+    }
+
+    // Update status to Rejected
+    const updatedTestimonial = await prisma.testimonial.update({
+      where: { id },
+      data: { status: 'Rejected' }
+    });
+
+    console.log(`[Testimonial Controller] Testimonial ${id} status updated to: Rejected`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Testimonial rejected successfully.',
+      data: updatedTestimonial
+    });
+  } catch (error) {
+    console.error('[Testimonial Controller - Reject Error]:', error);
+    next(error);
+  }
+};
+
 module.exports = {
-  submitTestimonial
+  submitTestimonial,
+  getAllTestimonials,
+  approveTestimonial,
+  rejectTestimonial
 };
