@@ -109,3 +109,9 @@ The frontend application will be accessible at `http://localhost:5173`.
 - **Approved-Only Backend API (`GET /api/testimonials/approved`)**: RESTful endpoint strictly filtering by `status === 'Approved'` ordered by newest first, guaranteeing zero leakage of Pending or Rejected reviews.
 - **Embeddable Widget (`/widget`)**: Lightweight, transparent iframe view designed for third-party embedding. Dynamically parses URL search parameters (`?accent=%23ef4444` or `?accent=#10b981`) to style star icons, badges, and card borders in real time.
 - **Standalone Proof of Concept (`demo.html`)**: Standalone corporate landing page demonstrating live iframe embedding (`<iframe src="http://localhost:5173/widget" ...>`) with interactive JavaScript buttons to test live theme switching.
+
+#### 🎨 How to Test Widget Color Theming in Your Browser
+When accessing the widget directly at `http://localhost:5173/widget` without URL parameters, it defaults to our Indigo & Gold branding. To customize the theme dynamically, append the `?accent=` query parameter with a hex color code (using `%23` in place of the `#` symbol):
+- **Red Theme**: `http://localhost:5173/widget?accent=%23ef4444`
+- **Emerald Theme**: `http://localhost:5173/widget?accent=%2310b981`
+- **Amber Theme**: `http://localhost:5173/widget?accent=%23f59e0b`
