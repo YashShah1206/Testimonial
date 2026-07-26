@@ -16,8 +16,8 @@ A modern, full-stack testimonial collection and moderation platform built as an 
 Testimonial/
 ├── client/                 # React frontend (Vite)
 │   ├── src/
-│   │   ├── components/     # Reusable UI components (TestimonialForm, StarRatingInput)
-│   │   ├── pages/          # Application pages (Home / Submission Wall)
+│   │   ├── components/     # Reusable UI components (TestimonialForm, StarRatingInput, TestimonialCard)
+│   │   ├── pages/          # Application pages (Home / Submission Form, Dashboard / Moderation)
 │   │   ├── services/       # Axios API client & endpoints
 │   │   ├── App.jsx         # Router & main application wrapper
 │   │   └── main.jsx        # React DOM entry point
@@ -91,7 +91,14 @@ The frontend application will be accessible at `http://localhost:5173`.
 
 ---
 
-## ✅ Current Features (Task 1: Core Foundation & Customer Submission Flow)
+## ✅ Implemented Features
+
+### Task 1: Core Foundation & Customer Submission Flow (`/`)
 - **Public Submission Form**: Responsive card layout with real-time field validation, interactive star ratings, photo upload preview, loading indicators, and success banners.
 - **Backend API**: RESTful endpoint (`POST /api/testimonials`) with server-side validation and multipart/form-data support for optional photo uploads.
 - **Database Persistence**: Stores submitted testimonials in SQLite with an automatic default status of `Pending`.
+
+### Task 2: Moderation Dashboard (`/dashboard`)
+- **Review Dashboard**: Responsive public moderation page displaying all submitted testimonials ordered newest first, complete with live stats counters (Pending vs Approved vs Rejected).
+- **Status Badges & Optimistic UI**: Distinct color-coded badges (Yellow/Pending, Green/Approved, Red/Rejected). Clicking Approve or Reject updates the badge in real time without reloading the webpage.
+- **Moderation APIs**: RESTful endpoints (`GET /api/testimonials`, `PATCH /api/testimonials/:id/approve`, and `PATCH /api/testimonials/:id/reject`) with robust 404 validation and CORS support.
